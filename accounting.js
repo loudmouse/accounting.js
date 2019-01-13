@@ -122,21 +122,35 @@
 
 
 	/**
-	 * Parses a format string or object and returns format obj for use in rendering
-	 *
-	 * `format` is either a string with the default (positive) format, or object
-	 * containing `pos` (required), `neg` and `zero` values (or a function returning
-	 * either a string or object)
-	 *
-	 * Either string or format.pos must contain "%v" (value) to be valid
+		* Explanatory Description:
+			* Parses a format string or object and returns format obj for use in rendering
+
+		* Parameters:
+			- string		'with default pos format', (must containt "%v" (value) to be valid)
+			- object		'containing pos (required) & (must containt "%v" (value) to be valid), neg, or zero values'
+			- function	'returns either a string or object like above'
+
+		* Returns:
+			- object
+
+		* Scenarios:
+			A:	valid string	==>	converts to a formatted object
+			B:	invalid string	==>	use the default formatting and convert to an object if it isn't already
+			C:	valid object	==>	returns as is
+			D:	invalid object	==>	use the default formatting and convert to an object if it isn't already
+			E:	function	==>	depends on what the function returns
+			F:	nothing ==> use the default formatting and convert to an object if it isn't already
 	 */
+
 	function checkCurrencyFormat(format) {
+		// default value will be "%s%v" to start ie, $5
 		var defaults = lib.settings.currency.format;
 
 		// Allow function as format parameter (should return string or object):
 		if ( typeof format === "function" ) format = format();
 
 		// Format can be a string, in which case `value` ("%v") must be present:
+		// checks that 'format' is a string AND the string contains a value (number)
 		if ( isString( format ) && format.match("%v") ) {
 
 			// Create and return positive, negative and zero formats:
@@ -169,7 +183,7 @@
 	 * Alias: `accounting.parse(string)`
 	 *
 	 * Decimal must be included in the regular expression to match floats (defaults to
-	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal 
+	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal
 	 * separator, provide it as the second argument.
 	 *
 	 * Also matches bracketed negatives (eg. "$ (1.99)" => -1.99)
